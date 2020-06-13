@@ -7,6 +7,7 @@ const { pagination } = require("./scripts/2-pagination");
 const { sort } = require("./scripts/3-sort");
 const { search1 } = require("./scripts/4-search-exact-match");
 const { searchAndSort } = require("./scripts/5-sort-search-pagination");
+const { search2 } = require("./scripts/6-search-fuzzy-match1");
 
 const FAUNADB_SECRET = process.env.FAUNADB_SECRET;
 var client = new faunadb.Client({ secret: FAUNADB_SECRET });
@@ -16,4 +17,5 @@ var client = new faunadb.Client({ secret: FAUNADB_SECRET });
 // pagination(client);
 // sort(client);
 // search1(client);
-searchAndSort(client);
+// searchAndSort(client);
+search2(client);
