@@ -17,14 +17,14 @@ async function createIndexSearchByName(client) {
 }
 
 // QUERY: INDEX
-async function getAllDocsSearchByName(client, name) {
-  console.log("getAllDocsSearchByName: START");
+async function getDocsSearchByName(client, name) {
+  console.log("getDocsSearchByName: START");
   const fql = q.Map(
     q.Paginate(q.Match(q.Index("user_idx_searchby_name"), name)),
     q.Lambda(["eachRef"], q.Get(q.Var("eachRef")))
   );
   const resp = await client.query(fql);
-  console.log("getAllDocsSearchByName: END");
+  console.log("getDocsSearchByName: END");
   return resp;
 }
 
@@ -45,14 +45,14 @@ async function createIndexSearchByUserName(client) {
 }
 
 // QUERY: INDEX
-async function getAllDocsSearchByUserName(client, username) {
-  console.log("getAllDocsSearchByName: START");
+async function getDocsSearchByUserName(client, username) {
+  console.log("getDocsSearchByName: START");
   const fql = q.Map(
     q.Paginate(q.Match(q.Index("user_idx_searchby_username"), username)),
     q.Lambda(["eachRef"], q.Get(q.Var("eachRef")))
   );
   const resp = await client.query(fql);
-  console.log("getAllDocsSearchByName: END");
+  console.log("getDocsSearchByName: END");
   return resp;
 }
 
@@ -63,13 +63,13 @@ async function search1(client) {
     // # Step1: createIndex -inorder to query multiple records // searchBy: user.name
     // await createIndexSearchByName(client);
     // ----------------------------------
-    // const resp = await getAllDocsSearchByName(client, "Third User");
+    // const resp = await getDocsSearchByName(client, "Third User");
     // console.log(resp.data.map(getObject));
     // ----------------------------------
     // # Step2: createIndex -inorder to query multiple records // searchBy: user.username
     // await createIndexSearchByUserName(client);
     // ----------------------------------
-    // const resp = await getAllDocsSearchByUserName(client, "three");
+    // const resp = await getDocsSearchByUserName(client, "three");
     // console.log(resp.data.map(getObject));
     // ----------------------------------
   } catch (e) {

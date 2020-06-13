@@ -4,7 +4,7 @@ const { getId, getObject } = require("./utils");
 
 // CREATE: a INDEX (with no config)
 async function createIndexSortByName(client) {
-  console.log("getAllDocs: START");
+  console.log("getDocs: START");
   const fql = q.CreateIndex({
     name: "user_idx_sortby_name",
     source: q.Collection("user_collection"),
@@ -12,19 +12,19 @@ async function createIndexSortByName(client) {
   });
   const resp = await client.query(fql);
   console.log(resp);
-  console.log("getAllDocs: END");
+  console.log("getDocs: END");
   return resp;
 }
 
 // READ: ALL Documents // (sql: selectAllRows)
-async function getAllDocsSortByName(client) {
-  console.log("getAllDocs: START");
+async function getDocsSortByName(client) {
+  console.log("getDocs: START");
   const fql = q.Map(
     q.Paginate(q.Match(q.Index("user_idx_sortby_name"))),
     q.Lambda(["x", "eachRef"], q.Get(q.Var("eachRef")))
   );
   const resp = await client.query(fql);
-  console.log("getAllDocs: END");
+  console.log("getDocs: END");
   return resp;
 }
 
@@ -45,14 +45,14 @@ async function createIndexSortByAgeDesc(client) {
 }
 
 // READ: ALL Documents // (sql: selectAllRows)
-async function getAllDocsSortByAgeDesc(client) {
-  console.log("getAllDocsSortByAgeDesc: START");
+async function getDocsSortByAgeDesc(client) {
+  console.log("getDocsSortByAgeDesc: START");
   const fql = q.Map(
     q.Paginate(q.Match(q.Index("user_idx_sortby_age_desc"))),
     q.Lambda(["x", "eachRef"], q.Get(q.Var("eachRef")))
   );
   const resp = await client.query(fql);
-  console.log("getAllDocsSortByAgeDesc: END");
+  console.log("getDocsSortByAgeDesc: END");
   return resp;
 }
 
@@ -64,7 +64,7 @@ async function sort(client) {
     // const resp = await createIndexSortByName(client);
     // console.log(resp);
     // ----------------------------------
-    // const resp = await getAllDocsSortByName(client);
+    // const resp = await getDocsSortByName(client);
     // console.log(resp);
     // console.log(resp.data.map(getObject));
     // ----------------------------------
@@ -72,7 +72,7 @@ async function sort(client) {
     // const resp = await createIndexSortByAgeDesc(client);
     // console.log(resp);
     // ----------------------------------
-    // const resp = await getAllDocsSortByAgeDesc(client);
+    // const resp = await getDocsSortByAgeDesc(client);
     // console.log(resp);
     // console.log(resp.data.map(getObject));
     // ----------------------------------
