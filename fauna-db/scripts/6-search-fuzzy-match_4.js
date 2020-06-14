@@ -9,6 +9,7 @@ const { getId, getObject } = require("./utils");
 // Option 3: Using 'Trigrams' technique (Ngrams of size 3) // [OFTEN-USED]
 // split 'sentence' into (Ngrams of size 3) and store it as binding (computedFileds)
 // while querying split 'searchKeyword' into (Ngrams of size 3) and search
+// LessStorgae // can search any 3-continuous-char-seq
 
 // CREATE: INDEX
 async function createIndexFuzzySearchByNameAndUsername(client) {
@@ -27,10 +28,18 @@ async function createIndexFuzzySearchByNameAndUsername(client) {
           q.Lambda(
             "user",
             q.Distinct(
-              q.NGram(
-                q.LowerCase(q.Select(["data", "name"], q.Var("user"))),
-                3,
-                3
+              q.Union(
+                // store: both 'name-ngrams' 'username-ngrams'
+                q.NGram(
+                  q.LowerCase(q.Select(["data", "name"], q.Var("user"))),
+                  3,
+                  3
+                ),
+                q.NGram(
+                  q.LowerCase(q.Select(["data", "username"], q.Var("user"))),
+                  3,
+                  3
+                )
               )
             )
           )
@@ -40,6 +49,7 @@ async function createIndexFuzzySearchByNameAndUsername(client) {
     terms: [{ binding: "wordpartTrigrams" }], // searchTerms: wordpartTrigrams (wordparts: only Ngrams of size 3)
     values: [
       { binding: "strLength" }, // sortBy 'strLength' -asc // helps to find 'closestMatch' first in 'searchResults'
+      // { binding: "wordpartTrigrams" }, // sortBy 'strLength' -asc // helps to find 'closestMatch' first in 'searchResults'
       { field: ["ref"] },
     ],
     serialized: false, // serialized is not necessary (unless we care about 'consistency' in search)
@@ -86,7 +96,7 @@ async function fuzzSearch4(client) {
     // await createIndexFuzzySearchByNameAndUsername(client);
     // ----------------------------------
     // const keyword = "th"; // doesnt work (need minimum 3 chars)
-    const keyword = "thr";
+    const keyword = "Tird"; // atleast give '3 correct charSeq'
     const resp = await getDocsFuzzySearchByNameAndUsername(client, keyword);
     console.log(resp.data.map(getObject));
   } catch (e) {
