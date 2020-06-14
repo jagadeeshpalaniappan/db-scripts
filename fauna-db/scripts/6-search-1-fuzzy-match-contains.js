@@ -11,7 +11,7 @@ const { getId, getObject } = require("./utils");
 async function createIndexFuzzySearchByName(client) {
   console.log("createIndexFuzzySearchByName: START");
   const fql = q.CreateIndex({
-    name: "user_idx_fuzzsearchby_name_1",
+    name: "user_idx_fuzzsearchby_name_contains",
     source: q.Collection("user_collection"),
     // terms: [{ field: ["data", "name"] }], // searchTerms: can be used only for exact match
     values: [{ field: ["data", "name"] }, { field: ["ref"] }], // sortValues: [user.data.name, ref]
@@ -29,7 +29,7 @@ async function getDocsFuzzySearchByName(client, name) {
   const fql = q.Let(
     {
       indexFilteredResults: q.Filter(
-        q.Paginate(q.Match(q.Index("user_idx_fuzzsearchby_name_1"))),
+        q.Paginate(q.Match(q.Index("user_idx_fuzzsearchby_name_contains"))),
         q.Lambda(
           ["name", "ref"],
           q.ContainsStr(q.LowerCase(q.Var("name")), q.LowerCase(name))
