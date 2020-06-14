@@ -54,7 +54,6 @@ async function createIndexFuzzySearchByNameWords(client) {
 
 // QUERY: INDEX
 // tradeoff is we can search only "fullword"
-// TODO: fullword is not searchable
 async function getDocsFuzzySearchByNameWords(client, keyword) {
   console.log("getDocsFuzzySearchByNameWords: START");
   const fql = q.Map(

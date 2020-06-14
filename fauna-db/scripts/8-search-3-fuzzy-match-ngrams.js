@@ -8,6 +8,15 @@ const { getId, getObject } = require("./utils");
 
 // Option 3: Using 'Ngrams' technique
 // split 'sentence' into 'Ngrams' and store it as binding (computedFileds) and search
+/*
+- When it comes to searching it's all a tradeoff of performance and storage 
+- and in FaunaDB users can choose their tradeoff. 
+- Note that in the previous approach, 
+  - we stored each word separately, 
+  - with Ngrams we'll split words even further to provide some form of fuzzy matching. 
+- The downside is that the index size might become very big if you make the wrong choice 
+  (this is equally true for search engines, hence why they let you define different algorithms).
+*/
 
 function GenerateWordParts(inputWord) {
   return q.Distinct(
@@ -105,9 +114,11 @@ async function fuzzSearch3(client) {
     // # Step1: createIndex -inorder to query multiple records // searchBy: user.name
     // await createIndexFuzzySearchByNameAndUsername(client);
     // ----------------------------------
-    const resp = await getDocsFuzzySearchByNameAndUsername(client, "th");
-    console.log(resp.data.map(getObject));
+    // const resp = await getDocsFuzzySearchByNameAndUsername(client, "th");
+    // console.log(resp.data.map(getObject));
     // ----------------------------------
+
+    const resp = await jagPlayground(client);
   } catch (e) {
     console.log("##ERROR##");
     console.log(e);
@@ -117,3 +128,16 @@ async function fuzzSearch3(client) {
 module.exports = {
   fuzzSearch3,
 };
+
+// ngram playground
+/*
+async function jagPlayground(client) {
+  const str = "inputWord";
+  const min = 2;
+  const max = 3;
+  const fql1 = q.NGram(q.LowerCase(str), min, max);
+  const resp = await client.query(fql1);
+  console.log(resp);
+  return resp;
+}
+*/

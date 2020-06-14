@@ -11,6 +11,7 @@ const { fuzzSearch1 } = require("./scripts/6-search-1-fuzzy-match-contains");
 const { fuzzSearch2 } = require("./scripts/7-search-2-words-match");
 const { fuzzSearch3 } = require("./scripts/8-search-3-fuzzy-match-ngrams");
 const { fuzzSearch4 } = require("./scripts/9-search-4-fuzzy-match-trigrams");
+const { fuzzSearch5 } = require("./scripts/10-search-5-jag");
 
 const FAUNADB_SECRET = process.env.FAUNADB_SECRET;
 var client = new faunadb.Client({ secret: FAUNADB_SECRET });
@@ -22,6 +23,7 @@ var client = new faunadb.Client({ secret: FAUNADB_SECRET });
 // search1(client);
 // searchAndSort(client);
 // fuzzSearch1(client);
-fuzzSearch2(client);
+// fuzzSearch2(client);
 // fuzzSearch3(client);
 // fuzzSearch4(client);
+fuzzSearch5(client);
