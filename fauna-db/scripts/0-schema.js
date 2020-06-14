@@ -10,7 +10,7 @@ async function createCollection(client) {
 }
 
 // CREATE: a INDEX (with no config)
-async function createSimpleIndex(client) {
+async function createDefaultIndex(client) {
   const fql = q.CreateIndex({
     name: "user_idx_all",
     source: q.Collection("user_collection"),
@@ -22,5 +22,5 @@ async function createSimpleIndex(client) {
 
 module.exports = {
   createCollection,
-  createSimpleIndex,
+  createDefaultIndex,
 };

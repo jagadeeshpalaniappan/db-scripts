@@ -1,6 +1,6 @@
 const faunadb = require("faunadb");
 const q = faunadb.query;
-const { createCollection, createSimpleIndex } = require("./0-schema");
+const { createCollection, createDefaultIndex } = require("./0-schema");
 const { getObject } = require("./utils");
 
 // CREATE: a Document // (sql: insertRow)
@@ -124,7 +124,7 @@ const crud = async (client) => {
     // console.log(getObject(resp));
     // ----------------------------------
     // # Step7: createIndex -inorder to query multiple records
-    // const resp = await createSimpleIndex(client);
+    // const resp = await createDefaultIndex(client);
     // console.log(resp);
     // ----------------------------------
     // # Step8:
