@@ -9,6 +9,9 @@ async function createIndexSortByName(client) {
     name: "user_idx_sortby_name",
     source: q.Collection("user_collection"),
     values: [{ field: ["data", "name"] }, { field: ["ref"] }], // sortValues: [user.data.name, ref]
+    // SORTED-VALUES: (order is important)
+    // if we provided 'ref' first, then it will be sorted by 'ref' first, then 'name'
+    // so first wanted to search by 'name', then 'ref'
   });
   const resp = await client.query(fql);
   console.log(resp);

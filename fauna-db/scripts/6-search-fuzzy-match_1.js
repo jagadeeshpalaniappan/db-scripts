@@ -2,6 +2,11 @@ const faunadb = require("faunadb");
 const q = faunadb.query;
 const { getId, getObject } = require("./utils");
 
+// https://stackoverflow.com/questions/62109035/how-to-get-documents-that-contain-sub-string-in-faunadb
+// https://forums.fauna.com/t/support-wildcard-search-capabilities/140
+
+// Option 1: using ContainsStr() & Filter
+
 // CREATE: INDEX
 async function createIndexFuzzySearchByName(client) {
   console.log("createIndexFuzzySearchByName: START");
@@ -18,7 +23,7 @@ async function createIndexFuzzySearchByName(client) {
 }
 
 // QUERY: INDEX
-// This is easy, but the problem is we cannot Paginate on 'searchResults' :(
+// This is easy, tradeoff is we cannot Paginate on 'searchResults' :(
 async function getDocsFuzzySearchByName(client, name) {
   console.log("getDocsFuzzySearchByName: START");
   const fql = q.Let(
@@ -44,12 +49,12 @@ async function getDocsFuzzySearchByName(client, name) {
 
 // ----------------------------------
 
-async function search2(client) {
+async function fuzzSearch1(client) {
   try {
     // # Step1: createIndex -inorder to query multiple records // searchBy: user.name
     // await createIndexFuzzySearchByName(client);
     // ----------------------------------
-    const resp = await getDocsFuzzySearchByName(client, "Third");
+    const resp = await getDocsFuzzySearchByName(client, "Thi");
     // console.log(resp);
     console.log(resp.data.map(getObject));
     // ----------------------------------
@@ -60,5 +65,5 @@ async function search2(client) {
 }
 
 module.exports = {
-  search2,
+  fuzzSearch1,
 };
