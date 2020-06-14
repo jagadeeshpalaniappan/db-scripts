@@ -22,7 +22,7 @@ function SplitIntoWords(string, delimiter = " ") {
 async function createIndexFuzzySearchByNameWords(client) {
   console.log("createIndexFuzzySearchByNameWords: START");
   const fql = q.CreateIndex({
-    name: "user_idx_fuzzsearchby_name_words1",
+    name: "user_idx_searchby_name_username_words",
     source: {
       collection: q.Collection("user_collection"),
       fields: {
@@ -30,7 +30,15 @@ async function createIndexFuzzySearchByNameWords(client) {
         words: q.Query(
           q.Lambda(
             "user",
-            SplitIntoWords(q.Select(["data", "name"], q.Var("user"))) // each word
+            q.Distinct(
+              q.Union(
+                // store: { words: [full-name, full-username, 'name-all-words' 'username-all-words'] }
+                [q.LowerCase(q.Select(["data", "name"], q.Var("user")))], // full-name
+                [q.LowerCase(q.Select(["data", "username"], q.Var("user")))], // full-username
+                SplitIntoWords(q.Select(["data", "name"], q.Var("user"))), // name-all-words,
+                SplitIntoWords(q.Select(["data", "username"], q.Var("user"))) // username-all-words
+              )
+            )
           )
         ),
       },
@@ -47,11 +55,14 @@ async function createIndexFuzzySearchByNameWords(client) {
 // QUERY: INDEX
 // tradeoff is we can search only "fullword"
 // TODO: fullword is not searchable
-async function getDocsFuzzySearchByNameWords(client, name) {
+async function getDocsFuzzySearchByNameWords(client, keyword) {
   console.log("getDocsFuzzySearchByNameWords: START");
   const fql = q.Map(
     q.Paginate(
-      q.Match(q.Index("user_idx_fuzzsearchby_name_words"), q.LowerCase(name))
+      q.Match(
+        q.Index("user_idx_searchby_name_username_words"),
+        q.LowerCase(keyword)
+      )
     ),
     q.Lambda(["eachRef"], q.Get(q.Var("eachRef")))
   );
@@ -65,10 +76,13 @@ async function getDocsFuzzySearchByNameWords(client, name) {
 async function fuzzSearch2(client) {
   try {
     // # Step1: createIndex -inorder to query multiple records // searchBy: user.name
-    await createIndexFuzzySearchByNameWords(client);
+    // await createIndexFuzzySearchByNameWords(client);
     // ----------------------------------
-    // const resp = await getDocsFuzzySearchByNameWords(client, "third user");
-    // console.log(resp.data.map(getObject));
+    // const keyword = "third";
+    // const keyword = "third user";
+    // const keyword = "three";
+    const resp = await getDocsFuzzySearchByNameWords(client, keyword);
+    console.log(resp.data.map(getObject));
     // ----------------------------------
   } catch (e) {
     console.log("##ERROR##");
